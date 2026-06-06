@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-// import api from "../utils/api"; // Uncomment this when your backend is ready!
+import api from "../utils/api";
 
 const DEPARTMENTS = [
   "Blast Furnace", "Steel Melt Shop", "Roll Mill",
@@ -49,25 +49,32 @@ export default function NewRequest() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Check for missing fields
+
     if (!form.type || !form.title || !form.description || !form.department) {
       setError("Please fill in all required fields.");
       return;
     }
-    
+
     setLoading(true);
     setError("");
 
-    // Simulate backend response
-    setTimeout(() => {
-      console.log("Mock data submitted:", form);
-      const fakeResponse = {
-        requestId: "REQ-" + Math.floor(Math.random() * 10000)
-      };
-      setSuccess(fakeResponse);
+    try {
+      const res = await api.post("/requests", {
+        type: form.type,
+        title: form.title,
+        description: form.description,
+        priority: form.priority,
+        department: form.department,
+        amount: form.amount || 0,
+      });
+
+      const createdRequest = res.data?.request || res.data;
+      setSuccess(createdRequest);
+    } catch (err) {
+      setError(err.response?.data?.message || "Request submission failed. Please try again.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   if (success) {

@@ -4,7 +4,12 @@ async function buildApprovalChain(requestedById, department, requestType, amount
   const chain = [];
 
   const requester = await User.findById(requestedById);
-  if (!requester) throw new Error("Requester not found");
+  if (!requester) {
+    console.error(`❌ User not found with ID: ${requestedById}`);
+    console.error("   This usually means your old token is no longer valid.");
+    console.error("   Please log out and log back in with a valid account.");
+    throw new Error(`Requester user (ID: ${requestedById}) not found in database. Please log out and log back in.`);
+  }
 
   // Level 1 — direct manager
   if (requester.managerId) {

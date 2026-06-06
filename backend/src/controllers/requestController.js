@@ -9,6 +9,8 @@ const { generateRequestId }   = require("../utils/requestIdGen");
 // POST /api/requests
 async function createRequest(req, res, next) {
   try {
+    console.log("📝 createRequest - User:", req.user._id, "Name:", req.user.name, "Dept:", req.user.department);
+    
     const { type, title, description, priority, department, amount } = req.body;
     if (!type || !title || !description || !department) {
       return res.status(400).json({ message: "type, title, description, department are required" });
@@ -150,9 +152,12 @@ async function actionOnRequest(req, res, next) {
 
     const now = new Date();
 
+    // Map action names: "approve" → "approved", "reject" → "rejected"
+    const auditAction = action === "approve" ? "approved" : action === "reject" ? "rejected" : action;
+
     await AuditLog.create({
       requestId:   request._id,
-      action,
+      action:      auditAction,
       performedBy: req.user._id,
       comment:     comment || "",
       step:        request.currentStep,
