@@ -1,10 +1,7 @@
-/**
- * RINL ERP — Seed Data Script
- * Run: npm run seed
- * Creates: 1 admin, 4 HODs, 5 managers, 10 employees, 20 requests
- * All passwords: Test@1234
- */
+
 require("dotenv").config({ path: require("path").join(__dirname, "../../.env") });
+
+const DEMO_PASSWORD = process.env.SEED_PASSWORD || "Test@1234";
 
 const mongoose     = require("mongoose");
 const { connectDB } = require("../config/db");
@@ -76,7 +73,7 @@ async function seed() {
   console.log("👥  Creating users...");
   const savedUsers = {};
   for (const u of USERS) {
-    const user = new User({ ...u, passwordHash: "Test@1234" });
+    const user = new User({ ...u, passwordHash: DEMO_PASSWORD });
     await user.save();
     savedUsers[u.employeeId] = user;
   }
@@ -148,7 +145,7 @@ async function seed() {
 
   // Print summary
   console.log("\n" + "━".repeat(72));
-  console.log("✅  SEED COMPLETE — All credentials use password: Test@1234");
+  console.log("✅  SEED COMPLETE — All credentials use password: " + DEMO_PASSWORD);
   console.log("━".repeat(72));
   console.log(`${"Role".padEnd(10)} ${"Employee ID".padEnd(22)} ${"Name".padEnd(25)} Dept`);
   console.log("─".repeat(72));
@@ -157,10 +154,10 @@ async function seed() {
   });
   console.log("━".repeat(72));
   console.log("\n🔑  Quick logins:");
-  console.log("    Admin    → RINL-ADMIN-001 / Test@1234");
-  console.log("    HOD      → RINL-HOD-BF-01 / Test@1234");
-  console.log("    Manager  → RINL-MGR-BF-01 / Test@1234");
-  console.log("    Employee → RINL-EMP-001   / Test@1234\n");
+  console.log("    Admin    → RINL-ADMIN-001 / " + DEMO_PASSWORD);
+  console.log("    HOD      → RINL-HOD-BF-01 / " + DEMO_PASSWORD);
+  console.log("    Manager  → RINL-MGR-BF-01 / " + DEMO_PASSWORD);
+  console.log("    Employee → RINL-EMP-001   / " + DEMO_PASSWORD + "\n");
 
   process.exit(0);
 }
