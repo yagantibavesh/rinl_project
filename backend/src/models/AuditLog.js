@@ -8,8 +8,17 @@ const auditLogSchema = new mongoose.Schema({
     index:    true,
   },
   action: {
-    type:     String,
-    enum:     ["created","approved","rejected","escalated","delegated","info_requested"],
+    type: String,
+    // approve/reject are the action verbs sent from controller
+    // approved/rejected are past-tense alternatives — allow both
+    enum: [
+      "created",
+      "approve",   "approved",
+      "reject",    "rejected",
+      "escalated",
+      "delegated",
+      "info_requested",
+    ],
     required: true,
   },
   performedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

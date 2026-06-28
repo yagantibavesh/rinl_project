@@ -7,6 +7,12 @@ const requestSchema = new mongoose.Schema({
     enum:     ["purchase", "leave", "repair", "budget", "safety"],
     required: true,
   },
+  // subType for detailed routing
+  // repair: planned | emergency | overhaul
+  // safety: hotwork | confined | shutdown
+  // budget: operational | capital
+  subType:      { type: String, default: "" },
+
   title:        { type: String, required: true, trim: true },
   description:  { type: String, required: true },
   priority: {
